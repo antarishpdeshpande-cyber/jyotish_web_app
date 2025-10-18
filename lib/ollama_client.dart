@@ -6,7 +6,7 @@ class OllamaClient {
   final String model;
 
   OllamaClient({
-    this.baseUrl = 'https://var-pale-flashers-requirement.trycloudflare.com/',
+    this.baseUrl = 'https://var-pale-flashers-requirement.trycloudflare.com',
     this.model = 'llama3.2-3b-instruct-q8_0:latest',
   });
 
