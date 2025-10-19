@@ -6,7 +6,7 @@ class OllamaClient {
   final String model;
 
   OllamaClient({
-    this.baseUrl = 'http://3.110.170.189',
+    this.baseUrl = 'https://13-234-225-48.sslip.io',
     this.model = 'llama3.2-3b-instruct-q8_0:latest',
   });
 
