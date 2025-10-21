@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:http/http.dart' as http;
 
+/// A lightweight HTTP client for talking to your local or remote Ollama server.
 class OllamaClient {
   final String baseUrl;
   final String model;
@@ -18,17 +20,22 @@ class OllamaClient {
       "stream": false,
     });
 
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: body,
-    );
+    try {
+      final response = await http
+          .post(url, headers: {'Content-Type': 'application/json'}, body: body)
+          .timeout(const Duration(seconds: 30));
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      return data['response'] ?? '';
-    } else {
-      throw Exception('Ollama error ${response.statusCode}: ${response.body}');
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data['response']?.toString().trim() ?? '';
+      } else {
+        throw Exception(
+            '⚠️ Server responded with ${response.statusCode}: ${response.body}');
+      }
+    } on TimeoutException {
+      throw Exception('⏱️ Request timed out. Please check your connection.');
+    } catch (e) {
+      throw Exception('❌ Ollama request failed: $e');
     }
   }
 }
