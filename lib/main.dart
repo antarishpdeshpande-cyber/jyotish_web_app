@@ -172,100 +172,112 @@ Widget build(BuildContext context) {
               ],
             ),
 
-            // --- CHAT LIST ---
-            Expanded(
-              child: ListView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsets.all(12),
-                itemCount: _chat.length,
-                itemBuilder: (context, index) {
-                  final msg = _chat[index];
-                  final isUser = msg["role"] == "user";
-                  return Align(
-                    alignment:
-                        isUser ? Alignment.centerRight : Alignment.centerLeft,
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 6),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isUser
-                            ? const Color(0xFF5BC0BE).withOpacity(0.2)
-                            : const Color(0xFFFFD700).withOpacity(0.1),
-                        border: Border.all(
-                          color: isUser
-                              ? const Color(0xFF5BC0BE).withOpacity(0.4)
-                              : const Color(0xFFFFD700).withOpacity(0.4),
-                        ),
-                        borderRadius: BorderRadius.only(
-                          topLeft: const Radius.circular(14),
-                          topRight: const Radius.circular(14),
-                          bottomLeft: Radius.circular(isUser ? 14 : 4),
-                          bottomRight: Radius.circular(isUser ? 4 : 14),
-                        ),
-                      ),
-                      child: Text(
-                        msg["content"] ?? '',
-                        style: GoogleFonts.poppins(
-                          color: Colors.white.withOpacity(0.9),
-                          fontSize: 15,
-                          height: 1.4,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+     // --- CHAT LIST ---
+Expanded(
+  child: LayoutBuilder(
+    builder: (context, constraints) {
+      final maxWidth = constraints.maxWidth * 0.8;
 
-            const Divider(height: 1, color: Colors.white24),
+      return ListView.builder(
+        controller: _scrollController,
+        padding: const EdgeInsets.all(12),
+        itemCount: _chat.length,
+        itemBuilder: (context, index) {
+          final msg = _chat[index];
+          final isUser = msg["role"] == "user";
 
-            // --- INPUT BAR ---
-            SafeArea(
-              top: false,
+          return Align(
+            alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: maxWidth),
               child: Container(
-                color: const Color(0xFF1C2541),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _controller,
-                        textInputAction: TextInputAction.send,
-                        onSubmitted: (_) => _send(),
-                        decoration: InputDecoration(
-                          hintText: 'Ask about your stars...',
-                          hintStyle: GoogleFonts.poppins(
-                            color: Colors.white.withOpacity(0.6),
-                            fontSize: 15,
-                          ),
-                          border: InputBorder.none,
-                        ),
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: _loading
-                          ? const SizedBox(
-                              width: 22,
-                              height: 22,
-                              child:
-                                  CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                            )
-                          : const Icon(Icons.send_rounded, color: Colors.white),
-                      onPressed: _loading ? null : _send,
-                    ),
-                  ],
+                margin: const EdgeInsets.symmetric(vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: isUser
+                      ? const Color(0xFF5BC0BE).withOpacity(0.2)
+                      : const Color(0xFFFFD700).withOpacity(0.1),
+                  border: Border.all(
+                    color: isUser
+                        ? const Color(0xFF5BC0BE).withOpacity(0.4)
+                        : const Color(0xFFFFD700).withOpacity(0.4),
+                  ),
+                  borderRadius: BorderRadius.only(
+                    topLeft: const Radius.circular(14),
+                    topRight: const Radius.circular(14),
+                    bottomLeft: Radius.circular(isUser ? 14 : 4),
+                    bottomRight: Radius.circular(isUser ? 4 : 14),
+                  ),
+                ),
+                child: Text(
+                  msg["content"] ?? '',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white.withOpacity(0.9),
+                    fontSize: 15,
+                    height: 1.4,
+                  ),
                 ),
               ),
             ),
-            SizedBox(height: size.height * 0.01),
+          );
+        },
+      );
+    },
+  ),
+),
+
+const Divider(height: 1, color: Colors.white24),
+
+// --- INPUT BAR ---
+SafeArea(
+  top: false,
+  child: Container(
+    color: const Color(0xFF1C2541),
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+    child: Row(
+      children: [
+        Expanded(
+          child: TextField(
+            controller: _controller,
+            textInputAction: TextInputAction.send,
+            onSubmitted: (_) => _send(),
+            decoration: InputDecoration(
+              hintText: 'Ask about your stars...',
+              hintStyle: GoogleFonts.poppins(
+                color: Colors.white.withOpacity(0.6),
+                fontSize: 15,
+              ),
+              border: InputBorder.none,
+            ),
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontSize: 16,
+            ),
+          ),
+        ),
+        IconButton(
+          icon: _loading
+              ? const SizedBox(
+                  width: 22,
+                  height: 22,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                )
+              : const Icon(Icons.send_rounded, color: Colors.white),
+          onPressed: _loading ? null : _send,
+        ),
+      ],
+    ),
+  ),
+),
+
+SizedBox(height: size.height * 0.01),
+
           ],
         ),
       ),
